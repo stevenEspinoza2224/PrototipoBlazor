@@ -99,6 +99,7 @@ else
         {
             await _http.DeleteAsync($"http://localhost:5269/api/Cliente/Eliminar/{IdCliente}");
             await CargarPersonas();
+            StateHasChanged();
         }
     }
 }
