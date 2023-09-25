@@ -1,5 +1,6 @@
 ﻿@page "/index-clientes"
-@inject HttpClient http
+@inject HttpClient _http
+
 
 
 <h3>Cliente</h3>
@@ -16,7 +17,7 @@ else
 {
     <div class="row">
         <div class="offset-9 col-3 mb-3">
-            <a asp-action="Crear" asp-controller="Inicio" class="btn btn-secondary d-block mx-auto btn-lg">
+            <a href="crear-cliente" class="btn btn-secondary d-block mx-auto btn-lg">
                 Nuevo Cliente
             </a>
         </div>
@@ -40,6 +41,22 @@ else
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                @foreach (var elemento in Clientes)
+                                {
+                                    <tr>
+                                        <td>@elemento.IdCliente</td>
+                                        <td>@elemento.Categoria</td>
+                                        <td>@elemento.NombreCliente</td>
+                                        <td>@elemento.ApellidoCliente</td>
+                                        <td>
+                                            <a class ="btn btn-warning" asp-action="Editar" asp-route-id="@elemento.IdCliente">Editar</a>
+                                            <a class="btn btn-secondary" asp-action="Detalle" asp-route-id="@elemento.IdCliente">Detalle</a>
+                                            <a class="btn btn-danger" asp-action="Eliminar" asp-route-id="@elemento.IdCliente">Eliminar</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -60,6 +77,6 @@ else
 
     async Task CargarPersonas()
     {
-        //Clientes = await _http.GetFromJsonAsync<List<Cliente>>("http://localhost:5269/api/Cliente/Lista");
+        Clientes = JObject.Parse(await _http.GetStringAsync("http://localhost:5269/api/Cliente/Lista")).SelectToken("response")?.ToObject<List<Cliente>>();
     }
 }

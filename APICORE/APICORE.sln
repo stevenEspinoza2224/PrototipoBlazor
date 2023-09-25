@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrontCore", "..\FrontCore\F
 		{80DF16E4-E411-40E3-84AD-73BAA67491FC} = {80DF16E4-E411-40E3-84AD-73BAA67491FC}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "..\Model\Model.csproj", "{80DF16E4-E411-40E3-84AD-73BAA67491FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "..\Model\Model.csproj", "{80DF16E4-E411-40E3-84AD-73BAA67491FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
