@@ -1,6 +1,6 @@
 ﻿@page "/index-clientes"
 @inject HttpClient _http
-
+@inject IJSRuntime JSRUNTIME
 
 
 <h3>Cliente</h3>
@@ -18,7 +18,7 @@ else
     <div class="row">
         <div class="offset-9 col-3 mb-3">
             <a href="crear-cliente" class="btn btn-secondary d-block mx-auto btn-lg">
-                Nuevo Cliente
+                <i class="bi bi-file-plus-fill"></i> Nuevo Cliente
             </a>
         </div>
     </div>
@@ -50,9 +50,9 @@ else
                                         <td>@elemento.NombreCliente</td>
                                         <td>@elemento.ApellidoCliente</td>
                                         <td>
-                                            <a class ="btn btn-warning" asp-action="Editar" asp-route-id="@elemento.IdCliente">Editar</a>
-                                            <a class="btn btn-secondary" asp-action="Detalle" asp-route-id="@elemento.IdCliente">Detalle</a>
-                                            <a class="btn btn-danger" asp-action="Eliminar" asp-route-id="@elemento.IdCliente">Eliminar</a>
+                                            <a class="btn btn-warning" asp-action="Editar" asp-route-id="@elemento.IdCliente"><i class="bi bi-pencil-fill"></i>Editar</a>
+                                            <a class="btn btn-secondary" asp-action="Detalle" asp-route-id="@elemento.IdCliente"><i class="bi bi-info-circle-fill"></i>Detalle</a>
+                                            <a class="btn btn-danger" asp-action="Eliminar" asp-route-id="@elemento.IdCliente"><i class="bi bi-eraser-fill"></i>Eliminar</a>
                                         </td>
                                     </tr>
                                 }
@@ -67,12 +67,22 @@ else
 
 }
 
+
 @code {
     public List<Cliente>? Clientes { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+
         await CargarPersonas();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRUNTIME.InvokeVoidAsync("inicializarDataTables", "tblClientes");
+        }
     }
 
     async Task CargarPersonas()
