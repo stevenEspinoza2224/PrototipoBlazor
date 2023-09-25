@@ -50,9 +50,9 @@ else
                                         <td>@elemento.NombreCliente</td>
                                         <td>@elemento.ApellidoCliente</td>
                                         <td>
-                                            <a class="btn btn-warning" asp-action="Editar" asp-route-id="@elemento.IdCliente"><i class="bi bi-pencil-fill"></i>Editar</a>
+                                            <a class="btn btn-warning" href="editar-cliente/@elemento.IdCliente.ToString()"><i class="bi bi-pencil-fill"></i>Editar</a>
                                             <a class="btn btn-secondary" asp-action="Detalle" asp-route-id="@elemento.IdCliente"><i class="bi bi-info-circle-fill"></i>Detalle</a>
-                                            <a class="btn btn-danger" asp-action="Eliminar" asp-route-id="@elemento.IdCliente"><i class="bi bi-eraser-fill"></i>Eliminar</a>
+                                            <a class="btn btn-danger" onclick="@(()=> BorrarCliente(elemento.IdCliente))"><i class="bi bi-eraser-fill"></i>Eliminar</a>
                                         </td>
                                     </tr>
                                 }
@@ -90,5 +90,15 @@ else
     async Task CargarPersonas()
     {
         Clientes = JObject.Parse(await _http.GetStringAsync("http://localhost:5269/api/Cliente/Lista")).SelectToken("response")?.ToObject<List<Cliente>>();
+    }
+    async Task BorrarCliente(int IdCliente)
+    {
+        var clienteSelected = Clientes.FirstOrDefault(x => x.IdCliente == IdCliente);
+
+        if (await jsRuntime.InvokeAsync<bool>("confirm", $"Desea eliminar a {clienteSelected.NombreCliente}"))
+        {
+            await _http.DeleteAsync($"http://localhost:5269/api/Cliente/Eliminar/{IdCliente}");
+            await CargarPersonas();
+        }
     }
 }

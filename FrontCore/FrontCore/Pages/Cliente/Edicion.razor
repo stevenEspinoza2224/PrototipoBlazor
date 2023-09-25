@@ -1,11 +1,29 @@
-﻿@page "/editar-cliente/{IdCliente}:int"
+﻿@page "/editar-cliente/{IdCliente:int}"
+@inject HttpClient _http
+@inject NavigationManager NavManager
 
 <h3>Edicion de Cliente</h3>
 
+<FormularioCliente Titulo="Editar Cliente" OnValidSubmit="EditarPersona" cliente="@Cliente" TextoBoton="Editar Cliente"></FormularioCliente>
+
 @code {
     [Parameter]
-    [SupplyParameterFromQuery (Name ="IdCliente")]
     public int IdCliente { get; set; }
 
-    public Cliente Cliente { get; set; } = new();
+    public Cliente? Cliente { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Cliente = JObject.Parse(await _http.GetStringAsync($"http://localhost:5269/api/Cliente/Obtener/{IdCliente}"))?.SelectToken("response")?.ToObject<Cliente>();
+    }
+
+    async Task EditarPersona()
+    {
+        var respuesta = await _http.PutAsJsonAsync("http://localhost:5269/api/Cliente/Editar", Cliente);
+
+        if (respuesta.IsSuccessStatusCode)
+        {
+            NavManager.NavigateTo("index-clientes");
+        }
+    }
 }

@@ -69,7 +69,7 @@ namespace APICORE.Controllers
             }
             catch (Exception error)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message, respuesta = c });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message, response = c });
             }
 
         }
