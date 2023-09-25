@@ -70,6 +70,7 @@ else
 
 @code {
     public List<Cliente>? Clientes { get; set; }
+    public JSObjectReference? Modulo;
 
     protected override async Task OnInitializedAsync()
     {
@@ -79,14 +80,18 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender && Modulo is not null)
         {
-            await JSRUNTIME.InvokeVoidAsync("inicializarDataTables", "tblClientes");
+            await Modulo.InvokeVoidAsync("inicializarDataTables", "tblClientes");
         }
     }
 
     async Task CargarPersonas()
     {
         Clientes = JObject.Parse(await _http.GetStringAsync("http://localhost:5269/api/Cliente/Lista")).SelectToken("response")?.ToObject<List<Cliente>>();
+    }
+    async Task CargarArchivo()
+    {
+        Modulo = await JSRUNTIME.InvokeAsync<JSObjectReference>("import","./js/DataTable.js");
     }
 }

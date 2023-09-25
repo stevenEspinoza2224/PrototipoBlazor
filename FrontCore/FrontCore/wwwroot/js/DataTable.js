@@ -1,5 +1,5 @@
 ﻿// Define una función para inicializar DataTables con un ID de tabla específico
-function inicializarDataTables(tableId) {
+export function inicializarDataTables(tableId) {
     $(document).ready(function () {
         // Utiliza el ID de la tabla proporcionado
         $(`#${tableId}`).DataTable({
