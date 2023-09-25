@@ -1,7 +1,20 @@
 ﻿@page "/index-clientes"
+@inject HttpClient _http
+
 
 <h3>Cliente</h3>
 
 @code {
+    public List<Cliente>? Clientes { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+
+        await CargarPersonas();
+    }
+
+    async Task CargarPersonas()
+    {
+        Clientes = await _http.GetFromJsonAsync<List<Cliente>>("http://localhost:5269/api/Cliente/Lista");
+    }
 }

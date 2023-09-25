@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using APICORE.Models;
+//using APICORE.Models;
+using Model;
 using System.Data.SqlClient;
 using System.Data;
 using Dapper;
