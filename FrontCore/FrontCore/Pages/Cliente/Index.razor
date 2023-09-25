@@ -93,9 +93,9 @@ else
     }
     async Task BorrarCliente(int IdCliente)
     {
-        var clienteSelected = Clientes.FirstOrDefault(x => x.IdCliente == IdCliente);
+        var clienteSelected = Clientes?.FirstOrDefault(x => x.IdCliente == IdCliente);
 
-        if (await jsRuntime.InvokeAsync<bool>("confirm", $"Desea eliminar a {clienteSelected.NombreCliente}"))
+        if (await Modulo!.InvokeAsync<bool>("CustomConfirm","Confirmar", $"Desea eliminar a {clienteSelected?.NombreCliente}","warning"))
         {
             await _http.DeleteAsync($"http://localhost:5269/api/Cliente/Eliminar/{IdCliente}");
             await CargarPersonas();
