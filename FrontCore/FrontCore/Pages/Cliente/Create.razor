@@ -1,7 +1,45 @@
 ﻿@page "/crear-cliente"
+@inject HttpClient _http
 <h3>Crear Cliente</h3>
 
+<div class="row">
+    <div class="offset-12">
+        <div class="card border">
+            <div class="card-header bg-dark">
+                <h3 class="text-white"> Lista de Clientes</h3>
+            </div>
+            <div class="card-body">
+                <EditForm Model="@cliente" OnValidSubmit="CrearCliente">
+                    <div class="form-group">
+                        <label class="control-label">Categoria</label>
+                        <div>
+                            <InputText class="form-control" placeholder="Categoria del Cliente" @bind-Value="cliente.Categoria"/>
+                            <ValidationMessage For="@(()=> cliente.Categoria)"/>
+                        </div>
+                        <label class="control-label">Nombre</label>
+                        <div>
+                            <InputText class="form-control" placeholder="Nombre del Cliente" @bind-Value="cliente.NombreCliente"/>
+                            <ValidationMessage For="@(()=> cliente.NombreCliente)"/>
+                        </div>
+                        <label class="control-label">Apellido</label>
+                        <div>
+                            <InputText class="form-control" placeholder="Apellido del Cliente" @bind-Value="cliente.ApellidoCliente" />
+                            <ValidationMessage For="@(()=> cliente.ApellidoCliente)" />
+                        </div>
+                    </div>
 
+                    <button type="submit" class="btn btn-success mt-3">Crear Cliente</button>
+                    <DataAnnotationsValidator/>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
 @code {
+    Cliente cliente = new Cliente();
 
+    async Task CrearCliente()
+    {
+        Console.WriteLine("Entramos a enviar datos");
+    }
 }

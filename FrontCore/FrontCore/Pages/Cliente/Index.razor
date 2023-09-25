@@ -1,6 +1,6 @@
 ﻿@page "/index-clientes"
 @inject HttpClient _http
-@inject IJSRuntime JSRUNTIME
+@inject IJSRuntime jsRuntime
 
 
 <h3>Cliente</h3>
@@ -70,18 +70,19 @@ else
 
 @code {
     public List<Cliente>? Clientes { get; set; }
-    public JSObjectReference? Modulo;
+    public IJSObjectReference? Modulo;
 
     protected override async Task OnInitializedAsync()
     {
-
         await CargarPersonas();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && Modulo is not null)
+        if (firstRender)
         {
+            Modulo = await jsRuntime.InvokeAsync<IJSObjectReference>("import", "/js/DataTable.js");
+
             await Modulo.InvokeVoidAsync("inicializarDataTables", "tblClientes");
         }
     }
@@ -89,9 +90,5 @@ else
     async Task CargarPersonas()
     {
         Clientes = JObject.Parse(await _http.GetStringAsync("http://localhost:5269/api/Cliente/Lista")).SelectToken("response")?.ToObject<List<Cliente>>();
-    }
-    async Task CargarArchivo()
-    {
-        Modulo = await JSRUNTIME.InvokeAsync<JSObjectReference>("import","./js/DataTable.js");
     }
 }
