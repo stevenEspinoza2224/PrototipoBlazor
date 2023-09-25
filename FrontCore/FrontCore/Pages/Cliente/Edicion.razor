@@ -1,0 +1,11 @@
+﻿@page "/editar-cliente/{IdCliente}:int"
+
+<h3>Edicion de Cliente</h3>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery (Name ="IdCliente")]
+    public int IdCliente { get; set; }
+
+    public Cliente Cliente { get; set; } = new();
+}

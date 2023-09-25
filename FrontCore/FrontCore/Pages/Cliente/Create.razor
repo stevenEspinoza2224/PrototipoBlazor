@@ -15,13 +15,13 @@
                     <div class="form-group">
                         <label class="control-label">Categoria</label>
                         <div>
-                            <InputText class="form-control" placeholder="Categoria del Cliente" @bind-Value="cliente.Categoria"/>
-                            <ValidationMessage For="@(()=> cliente.Categoria)"/>
+                            <InputText class="form-control" placeholder="Categoria del Cliente" @bind-Value="cliente.Categoria" />
+                            <ValidationMessage For="@(()=> cliente.Categoria)" />
                         </div>
                         <label class="control-label">Nombre</label>
                         <div>
-                            <InputText class="form-control" placeholder="Nombre del Cliente" @bind-Value="cliente.NombreCliente"/>
-                            <ValidationMessage For="@(()=> cliente.NombreCliente)"/>
+                            <InputText class="form-control" placeholder="Nombre del Cliente" @bind-Value="cliente.NombreCliente" />
+                            <ValidationMessage For="@(()=> cliente.NombreCliente)" />
                         </div>
                         <label class="control-label">Apellido</label>
                         <div>
@@ -31,7 +31,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-success mt-3">Crear Cliente</button>
-                    <DataAnnotationsValidator/>
+                    <DataAnnotationsValidator />
                 </EditForm>
             </div>
         </div>
@@ -42,7 +42,10 @@
 
     async Task CrearCliente()
     {
-        await _http.PostAsJsonAsync("http://localhost:5269/api/Cliente/Guardar",cliente);
-        NavManager.NavigateTo("index-clientes");
+        var respuesta = await _http.PostAsJsonAsync("http://localhost:5269/api/Cliente/Guardar", cliente);
+        if (respuesta.IsSuccessStatusCode)
+        {
+            NavManager.NavigateTo("index-clientes");
+        }
     }
 }
