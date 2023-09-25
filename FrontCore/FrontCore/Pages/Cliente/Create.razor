@@ -1,5 +1,7 @@
 ﻿@page "/crear-cliente"
 @inject HttpClient _http
+@inject NavigationManager NavManager
+
 <h3>Crear Cliente</h3>
 
 <div class="row">
@@ -40,6 +42,7 @@
 
     async Task CrearCliente()
     {
-        Console.WriteLine("Entramos a enviar datos");
+        await _http.PostAsJsonAsync("http://localhost:5269/api/Cliente/Guardar",cliente);
+        NavManager.NavigateTo("index-clientes");
     }
 }
