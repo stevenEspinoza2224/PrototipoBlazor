@@ -75,15 +75,22 @@ else
     protected override async Task OnInitializedAsync()
     {
         await CargarPersonas();
+
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            if (Clientes is null)
+            {
+                await CargarPersonas();
+            }
+
             Modulo = await jsRuntime.InvokeAsync<IJSObjectReference>("import", "/js/DataTable.js");
 
             await Modulo.InvokeVoidAsync("inicializarDataTables", "tblClientes");
+
         }
     }
 
@@ -95,7 +102,7 @@ else
     {
         var clienteSelected = Clientes?.FirstOrDefault(x => x.IdCliente == IdCliente);
 
-        if (await Modulo!.InvokeAsync<bool>("CustomConfirm","Confirmar", $"Desea eliminar a {clienteSelected?.NombreCliente}","warning"))
+        if (await Modulo!.InvokeAsync<bool>("CustomConfirm", "Confirmar", $"Desea eliminar a {clienteSelected?.NombreCliente}", "warning"))
         {
             await _http.DeleteAsync($"http://localhost:5269/api/Cliente/Eliminar/{IdCliente}");
             await CargarPersonas();

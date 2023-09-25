@@ -1,4 +1,5 @@
-﻿<div class="row">
+﻿@inject NavigationManager NavManager
+<div class="row">
     <div class="offset-12">
         <div class="card border">
             <div class="card-header bg-dark">
@@ -25,6 +26,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-success mt-3">@TextoBoton</button>
+                    <NavLink href="index-clientes" class="btn btn-secondary mt-3">Volver</NavLink>
                     <DataAnnotationsValidator />
                 </EditForm>
             </div>
