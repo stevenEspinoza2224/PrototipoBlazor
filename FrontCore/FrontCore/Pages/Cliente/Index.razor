@@ -1,6 +1,7 @@
 ﻿@page "/index-clientes"
 @inject HttpClient _http
 @inject IJSRuntime jsRuntime
+@inject IConfiguration configuration
 
 
 <h3>Cliente</h3>
@@ -71,12 +72,16 @@ else
 
 @code {
     public List<Cliente>? Clientes { get; set; }
+
     public IJSObjectReference? Modulo;
+
+    public Service? service { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        await CargarPersonas();
+        CargarConfiguracion();
 
+        await CargarPersonas();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -97,15 +102,31 @@ else
 
     async Task CargarPersonas()
     {
-        Clientes = JObject.Parse(await _http.GetStringAsync("http://localhost:5269/api/Cliente/Lista")).SelectToken("response")?.ToObject<List<Cliente>>();
+        if (service is null )
+        {
+            CargarConfiguracion();
+
+        }
+
+        Endpoint endpoint = service?.Endpoints?["Lista"] ?? throw new NullReferenceException("No se encontró el Endpoint");
+
+        Clientes = JObject.Parse(await _http.GetStringAsync($"{service.BaseUri}{endpoint.Url}")).SelectToken("response")?.ToObject<List<Cliente>>();
     }
+
+    private void CargarConfiguracion()
+    {
+        service = configuration.GetSection("ServiceConfiguration").Get<ServiceConfiguration>()?["Backend"];
+    }
+
     async Task BorrarCliente(int IdCliente)
     {
         var clienteSelected = Clientes?.FirstOrDefault(x => x.IdCliente == IdCliente);
 
+        Endpoint endpoint = service?.Endpoints?["Eliminar"] ?? throw new NullReferenceException("No se encontró el Endpoint");
+
         if (await Modulo!.InvokeAsync<bool>("CustomConfirm", "Confirmar", $"Desea eliminar a {clienteSelected?.NombreCliente}", "warning"))
         {
-            await _http.DeleteAsync($"http://localhost:5269/api/Cliente/Eliminar/{IdCliente}");
+            await _http.DeleteAsync($"{service.BaseUri}{endpoint.Url}{IdCliente}");
 
             await CargarPersonas();
 

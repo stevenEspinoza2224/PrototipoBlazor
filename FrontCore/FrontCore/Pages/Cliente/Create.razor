@@ -1,6 +1,7 @@
 ﻿@page "/crear-cliente"
 @inject HttpClient _http
 @inject NavigationManager NavManager
+@inject IConfiguration configuration
 
 <h3>Crear Cliente</h3>
 
@@ -10,9 +11,25 @@
 @code {
     Cliente cliente = new Cliente();
 
+    Service? service { get; set; }
+
+    protected override void OnInitialized()
+    {
+        CargarConfiguracion();
+
+    }
+
+    private void CargarConfiguracion()
+    {
+        service = configuration.GetSection("ServiceConfiguration").Get<ServiceConfiguration>()?["Backend"];
+    }
+
     async Task CrearCliente()
     {
-        var respuesta = await _http.PostAsJsonAsync("http://localhost:5269/api/Cliente/Guardar", cliente);
+        Endpoint endpoint = service?.Endpoints?["Guardar"] ?? throw new NullReferenceException("No se encontró el Endpoint");
+
+        var respuesta = await _http.PostAsJsonAsync($"{service.BaseUri}{endpoint.Url}", cliente);
+
         if (respuesta.IsSuccessStatusCode)
         {
             NavManager.NavigateTo("index-clientes");
