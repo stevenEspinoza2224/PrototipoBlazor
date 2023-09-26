@@ -105,7 +105,9 @@ else
         if (await Modulo!.InvokeAsync<bool>("CustomConfirm", "Confirmar", $"Desea eliminar a {clienteSelected?.NombreCliente}", "warning"))
         {
             await _http.DeleteAsync($"http://localhost:5269/api/Cliente/Eliminar/{IdCliente}");
+
             await CargarPersonas();
+
             StateHasChanged();
         }
     }
