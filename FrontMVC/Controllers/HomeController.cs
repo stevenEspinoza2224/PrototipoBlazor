@@ -1,21 +1,36 @@
 ﻿using FrontMVC.Models;
 using Microsoft.AspNetCore.Mvc;
+using Model;
+using Model.Configuration;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using static System.Net.WebRequestMethods;
 
 namespace FrontMVC.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private HttpClient _httpClient;
+        private Service? service;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,
+                              HttpClient httpClient,
+                              IConfiguration configuration)
         {
             _logger = logger;
+            _httpClient = httpClient;
+            service = configuration.GetSection("ServiceConfiguration").Get<ServiceConfiguration>()?["Backend"];
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
-            return View();
+            Model.Configuration.Endpoint endpoint = service?.Endpoints?["Lista"] ?? throw new NullReferenceException("No se encontró el Endpoint");
+
+            var Clientes = JObject.Parse(await _httpClient.GetStringAsync($"{service.BaseUri}{endpoint.Url}")).SelectToken("response")?.ToObject<List<Cliente>>();
+
+            return View(Clientes);
         }
 
         public IActionResult Privacy()

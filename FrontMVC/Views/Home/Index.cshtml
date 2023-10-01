@@ -9,7 +9,7 @@
 <div class="row">
     <div class="offset-9 col-3 mb-3">
         <a asp-action="Crear" asp-asp-controller="Home" class="btn btn-secondary d-block mx-auto btn-lg">
-            Nuevo Cliente
+            <i class="bi bi-file-plus-fill"></i> Nuevo Cliente
         </a>
     </div>
 </div>
@@ -22,7 +22,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    @if(Model.Count() > 0)
+                    @if(Model is not null && Model.Count() > 0)
                     {
                         <table class="table table-bordered" id="tblClientes" cellspacing="0">
                             <thead>
@@ -31,8 +31,25 @@
                                     <th>@Html.DisplayNameFor(m=>m.Categoria)</th>
                                     <th>@Html.DisplayNameFor(m=>m.NombreCliente)</th>
                                     <th>@Html.DisplayNameFor(m=>m.ApellidoCliente)</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(m=> item.IdCliente)</td>
+                                        <td>@Html.DisplayFor(m=> item.Categoria)</td>
+                                        <td>@Html.DisplayFor(m=> item.NombreCliente)</td>
+                                        <td>@Html.DisplayFor(m=> item.ApellidoCliente)</td>
+                                        <td>
+                                            <a class="btn btn-warning" asp-action="Editar" asp-route-id="@item.IdCliente"><i class="bi bi-file-pencil-fill"></i>Editar</a>
+                                            <a class="btn btn-secondary" asp-action="Detalle" asp-route-id="@item.IdCliente"><i class="bi bi-file-info-circle-fill"></i>Detalle</a>
+                                            <a class="btn btn-danger" asp-action="Borrar" asp-route-id="@item.IdCliente"><i class="bi bi-eraser-fill"></i>Borrar</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
                         </table>
                     }
                     else
