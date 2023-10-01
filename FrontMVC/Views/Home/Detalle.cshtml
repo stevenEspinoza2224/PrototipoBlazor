@@ -1,0 +1,25 @@
+﻿@model Model.Cliente
+
+@{
+    ViewData["Title"] = "Detalle Cliente";
+}
+
+<h1 class="text-center">Manejo de Clientes</h1>
+
+<div class="row">
+    <div class="offset-12">
+        <div class="card border">
+            <div class="card-header bg-dark">
+                <h3 class="text-white"><strong>Detalle Cliente</strong></h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item"> <strong>Categoria</strong> @Html.DisplayFor(m=>m.Categoria)</li>
+                    <li class="list-group-item"> <strong>Nombre</strong> @Html.DisplayFor(m=>m.NombreCliente)</li>
+                    <li class="list-group-item"> <strong>Apellido</strong> @Html.DisplayFor(m=>m.ApellidoCliente)</li>
+                </ul>
+                <a asp-controller="Home" asp-action="Index">Volver</a>
+            </div>
+        </div>
+    </div>
+</div>

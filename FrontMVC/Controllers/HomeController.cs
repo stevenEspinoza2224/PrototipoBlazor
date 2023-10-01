@@ -38,12 +38,13 @@ namespace FrontMVC.Controllers
             return View();
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Crear(Cliente cliente)
         {
             if (ModelState.IsValid)
             {
                 Model.Configuration.Endpoint endpoint = service?.Endpoints?["Guardar"] ?? throw new NullReferenceException("No se encontró el Endpoint");
-                
+
                 var respuesta = await _httpClient.PostAsJsonAsync($"{service.BaseUri}{endpoint.Url}", cliente);
 
                 return RedirectToAction(nameof(Index));
@@ -65,6 +66,78 @@ namespace FrontMVC.Controllers
             var Cliente = JObject.Parse(await _httpClient.GetStringAsync($"{service.BaseUri}{endpoint.Url}{id}"))?.SelectToken("response")?.ToObject<Cliente>();
 
             return View(Cliente);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Editar(Cliente cliente)
+        {
+            if (ModelState.IsValid)
+            {
+                Model.Configuration.Endpoint endpoint = service?.Endpoints?["Editar"] ?? throw new NullReferenceException("No se encontró el Endpoint");
+
+                var respuesta = await _httpClient.PutAsJsonAsync($"{service.BaseUri}{endpoint.Url}", cliente);
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Detalle(int? id)
+        {
+            if (id is null)
+            {
+                return NotFound();
+            }
+
+            Model.Configuration.Endpoint endpoint = service?.Endpoints?["Obtener"] ?? throw new NullReferenceException("No se encontró el Endpoint");
+
+            var Cliente = JObject.Parse(await _httpClient.GetStringAsync($"{service.BaseUri}{endpoint.Url}{id}"))?.SelectToken("response")?.ToObject<Cliente>();
+
+            return View(Cliente);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Borrar(int? id)
+        {
+            if (id is null)
+            {
+                return NotFound();
+            }
+
+            Model.Configuration.Endpoint endpoint = service?.Endpoints?["Obtener"] ?? throw new NullReferenceException("No se encontró el Endpoint");
+
+            var Cliente = JObject.Parse(await _httpClient.GetStringAsync($"{service.BaseUri}{endpoint.Url}{id}"))?.SelectToken("response")?.ToObject<Cliente>();
+
+            return View(Cliente);
+        }
+
+        [HttpPost, ActionName("Borrar")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BorrarCliente(int? id)
+        {
+            if (id is null)
+            {
+                return NotFound();
+            }
+
+            Model.Configuration.Endpoint endpointObtener = service?.Endpoints?["Obtener"] ?? throw new NullReferenceException("No se encontró el Endpoint");
+
+            var Cliente = JObject.Parse(await _httpClient.GetStringAsync($"{service.BaseUri}{endpointObtener.Url}{id}"))?.SelectToken("response")?.ToObject<Cliente>();
+
+            if (Cliente is null)
+            {
+                return View();
+            }
+
+            Model.Configuration.Endpoint endpointBorrar = service?.Endpoints?["Eliminar"] ?? throw new NullReferenceException("No se encontró el Endpoint");
+
+            var respuesta = await _httpClient.DeleteAsync($"{service.BaseUri}{endpointBorrar.Url}{id}");
+
+            return RedirectToAction(nameof(Index));
+
         }
         public IActionResult Privacy()
         {
