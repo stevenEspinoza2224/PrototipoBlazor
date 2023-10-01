@@ -10,7 +10,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APICORE", "APICORE.csproj",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "..\Model\Model.csproj", "{80DF16E4-E411-40E3-84AD-73BAA67491FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrontMVC", "..\FrontMVC\FrontMVC.csproj", "{7D1CE826-028F-4888-8FAE-59C90B84DB3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrontMVC", "..\FrontMVC\FrontMVC.csproj", "{7D1CE826-028F-4888-8FAE-59C90B84DB3A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{80DF16E4-E411-40E3-84AD-73BAA67491FC} = {80DF16E4-E411-40E3-84AD-73BAA67491FC}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
