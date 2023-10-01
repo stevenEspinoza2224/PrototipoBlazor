@@ -33,11 +33,24 @@ namespace FrontMVC.Controllers
             return View(Clientes);
         }
         [HttpGet]
-        public async Task<IActionResult> Crear()
+        public IActionResult Crear()
         {
             return View();
         }
+        [HttpPost]
+        public async Task<IActionResult> Crear(Cliente cliente)
+        {
+            if (ModelState.IsValid)
+            {
+                Model.Configuration.Endpoint endpoint = service?.Endpoints?["Guardar"] ?? throw new NullReferenceException("No se encontró el Endpoint");
+                
+                var respuesta = await _httpClient.PostAsJsonAsync($"{service.BaseUri}{endpoint.Url}", cliente);
 
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();
