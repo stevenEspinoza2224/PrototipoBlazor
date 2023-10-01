@@ -32,6 +32,11 @@ namespace FrontMVC.Controllers
 
             return View(Clientes);
         }
+        [HttpGet]
+        public async Task<IActionResult> Crear()
+        {
+            return View();
+        }
 
         public IActionResult Privacy()
         {
