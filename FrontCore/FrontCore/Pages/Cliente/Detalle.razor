@@ -1,0 +1,50 @@
+﻿@page "/detalle-cliente/{IdCliente:int}"
+@inject HttpClient _http
+@inject NavigationManager NavManager
+@inject IConfiguration configuration
+
+<h3>Detalle Cliente</h3>
+
+<div class="row">
+    <div class="offset-12">
+        <div class="card border">
+            <div class="card-header bg-dark">
+                <h3 class="text-white"> Detalle Cliente</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Categoria: </strong>@Cliente?.Categoria</li>
+                    <li class="list-group-item"><strong>Nombre: </strong>@Cliente?.NombreCliente</li>
+                    <li class="list-group-item"><strong>Apellido: </strong>@Cliente?.ApellidoCliente</li>
+                </ul>
+                <NavLink href="index-clientes" class="btn btn-secondary mt-3">Volver</NavLink>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int IdCliente { get; set; }
+
+    public Cliente? Cliente { get; set; } = new();
+
+    Service? service { get; set; }
+
+    protected override void OnInitialized()
+    {
+        CargarConfiguracion();
+
+    }
+
+    private void CargarConfiguracion()
+    {
+        service = configuration.GetSection("ServiceConfiguration").Get<ServiceConfiguration>()?["Backend"];
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        Endpoint endpoint = service?.Endpoints?["Obtener"] ?? throw new NullReferenceException("No se encontró el Endpoint");
+
+        Cliente = JObject.Parse(await _http.GetStringAsync($"{service.BaseUri}{endpoint.Url}{IdCliente}"))?.SelectToken("response")?.ToObject<Cliente>();
+    }
+}

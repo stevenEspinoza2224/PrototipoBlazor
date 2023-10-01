@@ -53,7 +53,7 @@ else
                                         <td>@elemento.ApellidoCliente</td>
                                         <td>
                                             <a class="btn btn-warning" href="editar-cliente/@elemento.IdCliente.ToString()"><i class="bi bi-pencil-fill"></i>Editar</a>
-                                            <a class="btn btn-secondary" asp-action="Detalle" asp-route-id="@elemento.IdCliente"><i class="bi bi-info-circle-fill"></i>Detalle</a>
+                                            <a class="btn btn-secondary" href="detalle-cliente/@elemento.IdCliente"><i class="bi bi-info-circle-fill"></i>Detalle</a>
                                             <a class="btn btn-danger" onclick="@(()=> BorrarCliente(elemento.IdCliente))"><i class="bi bi-eraser-fill"></i>Eliminar</a>
                                         </td>
                                     </tr>
