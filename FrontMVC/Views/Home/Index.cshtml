@@ -8,7 +8,7 @@
 
 <div class="row">
     <div class="offset-9 col-3 mb-3">
-        <a asp-action="Crear" asp-asp-controller="Home" class="btn btn-secondary d-block mx-auto btn-lg">
+        <a asp-action="Crear" asp-controller="Home" class="btn btn-secondary d-block mx-auto btn-lg">
             <i class="bi bi-file-plus-fill"></i> Nuevo Cliente
         </a>
     </div>
@@ -43,9 +43,9 @@
                                         <td>@Html.DisplayFor(m=> item.NombreCliente)</td>
                                         <td>@Html.DisplayFor(m=> item.ApellidoCliente)</td>
                                         <td>
-                                            <a class="btn btn-warning" asp-action="Editar" asp-route-id="@item.IdCliente"><i class="bi bi-file-pencil-fill"></i>Editar</a>
-                                            <a class="btn btn-secondary" asp-action="Detalle" asp-route-id="@item.IdCliente"><i class="bi bi-file-info-circle-fill"></i>Detalle</a>
-                                            <a class="btn btn-danger" asp-action="Borrar" asp-route-id="@item.IdCliente"><i class="bi bi-eraser-fill"></i>Borrar</a>
+                                            <a class="btn btn-warning" asp-action="Editar" asp-route-id="@item.IdCliente"><i class="bi bi-pencil-fill mx-1"></i>Editar</a>
+                                            <a class="btn btn-secondary" asp-action="Detalle" asp-route-id="@item.IdCliente"><i class="bi bi-exclamation-circle-fill mx-1"></i>Detalle</a>
+                                            <a class="btn btn-danger" asp-action="Borrar" asp-route-id="@item.IdCliente"><i class="bi bi-eraser-fill mx-1"></i>Borrar</a>
                                         </td>
                                     </tr>
                                 }

@@ -51,6 +51,21 @@ namespace FrontMVC.Controllers
 
             return View();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Editar(int? id)
+        {
+            if (id is null)
+            {
+                return NotFound();
+            }
+
+            Model.Configuration.Endpoint endpoint = service?.Endpoints?["Obtener"] ?? throw new NullReferenceException("No se encontró el Endpoint");
+
+            var Cliente = JObject.Parse(await _httpClient.GetStringAsync($"{service.BaseUri}{endpoint.Url}{id}"))?.SelectToken("response")?.ToObject<Cliente>();
+
+            return View(Cliente);
+        }
         public IActionResult Privacy()
         {
             return View();
