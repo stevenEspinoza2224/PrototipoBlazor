@@ -108,18 +108,21 @@ else
     {
         if (service is null )
         {
-            CargarConfiguracion();
+            await CargarConfiguracion();
 
         }
 
         Endpoint endpoint = service?.Endpoints?["Lista"] ?? throw new NullReferenceException("No se encontró el Endpoint");
-        _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await _localStorageService.GetItemAsync<string>(Inicializar.Token_Local));
-        var respuesta = await _http.GetStringAsync($"{service.BaseUri}{endpoint.Url}");
+
+        
+
         Clientes = JObject.Parse(await _http.GetStringAsync($"{service.BaseUri}{endpoint.Url}")).SelectToken("response")?.ToObject<List<Cliente>>();
     }
 
-    private void CargarConfiguracion()
+    private async Task CargarConfiguracion()
     {
+        _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await _localStorageService.GetItemAsync<string>(Inicializar.Token_Local));
+
         service = configuration.GetSection("ServiceConfiguration").Get<ServiceConfiguration>()?["Backend"];
     }
 

@@ -1,5 +1,9 @@
 ﻿@page "/editar-cliente/{IdCliente:int}"
+@using System.Net.Http.Headers;
+@using Blazored.LocalStorage;
+@using FrontCore.Helpers;
 @inject HttpClient _http
+@inject ILocalStorageService _localStorageService
 @inject NavigationManager NavManager
 @inject IConfiguration configuration
 
@@ -36,7 +40,9 @@
     {
         Endpoint endpoint = service?.Endpoints?["Editar"] ?? throw new NullReferenceException("No se encontró el Endpoint");
 
-        var respuesta = await _http.PutAsJsonAsync($"{service.BaseUri}{endpoint.Url}", Cliente);
+        _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await _localStorageService.GetItemAsync<string>(Inicializar.Token_Local));
+
+        var respuesta = await _http.PutAsJsonAsync($"{service.BaseUri}{endpoint.Url}/{Cliente.IdCliente}", Cliente);
 
         if (respuesta.IsSuccessStatusCode)
         {

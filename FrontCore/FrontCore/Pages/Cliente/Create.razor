@@ -1,4 +1,8 @@
 ﻿@page "/crear-cliente"
+@using System.Net.Http.Headers;
+@using Blazored.LocalStorage;
+@using FrontCore.Helpers;
+@inject ILocalStorageService _localStorageService
 @inject HttpClient _http
 @inject NavigationManager NavManager
 @inject IConfiguration configuration
@@ -27,6 +31,8 @@
     async Task CrearCliente()
     {
         Endpoint endpoint = service?.Endpoints?["Guardar"] ?? throw new NullReferenceException("No se encontró el Endpoint");
+
+        _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await _localStorageService.GetItemAsync<string>(Inicializar.Token_Local));
 
         var respuesta = await _http.PostAsJsonAsync($"{service.BaseUri}{endpoint.Url}", cliente);
 
