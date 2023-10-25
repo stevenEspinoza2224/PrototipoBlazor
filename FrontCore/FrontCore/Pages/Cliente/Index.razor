@@ -1,5 +1,9 @@
 ﻿@page "/index-clientes"
+@using System.Net.Http.Headers;
+@using Blazored.LocalStorage;
+@using FrontCore.Helpers;
 @inject HttpClient _http
+@inject ILocalStorageService _localStorageService
 @inject IJSRuntime jsRuntime
 @inject IConfiguration configuration
 
@@ -109,7 +113,8 @@ else
         }
 
         Endpoint endpoint = service?.Endpoints?["Lista"] ?? throw new NullReferenceException("No se encontró el Endpoint");
-
+        _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await _localStorageService.GetItemAsync<string>(Inicializar.Token_Local));
+        var respuesta = await _http.GetStringAsync($"{service.BaseUri}{endpoint.Url}");
         Clientes = JObject.Parse(await _http.GetStringAsync($"{service.BaseUri}{endpoint.Url}")).SelectToken("response")?.ToObject<List<Cliente>>();
     }
 

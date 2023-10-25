@@ -44,22 +44,24 @@ namespace FrontCore.Services
             {
                 Method = endpoint.HttpMethod,
                 RequestUri = new Uri(service.BaseUri, endpoint.Url),
-                Content = new StringContent(JsonConvert.SerializeObject(usuarioLogin), Encoding.UTF8, "application/json")
+                Content = new StringContent(JsonConvert.SerializeObject(new { userName = usuarioLogin.NombreUsuario, password = usuarioLogin.Password }), Encoding.UTF8, "application/json")
             };
 
             using var response = await _httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {
-                var userLoginRespuesta = JObject.Parse(await response.Content.ReadAsStringAsync())?.SelectToken("response")?.ToObject<UsuarioLoginRespuesta>();
+                string Token = JObject.Parse(await response.Content.ReadAsStringAsync())?.SelectToken("token").ToObject<string>();
 
-                await _localStorageService.SetItemAsync(Inicializar.Token_Local, userLoginRespuesta?.UserToken);
+                var userLoginRespuesta = JObject.Parse(await response.Content.ReadAsStringAsync())?.ToObject<UsuarioLoginRespuesta>();
 
-                await _localStorageService.SetItemAsync(Inicializar.Usuario_Local, userLoginRespuesta?.Usuario);
+                await _localStorageService.SetItemAsync(Inicializar.Token_Local, userLoginRespuesta?.UserToken ?? Token);
 
-                ((AuthStateProvider)_ProviderStateAuth).NotificarUsuarioLogueado(userLoginRespuesta?.UserToken);
+                await _localStorageService.SetItemAsync(Inicializar.Usuario_Local, userLoginRespuesta?.Usuario ?? new Usuario { NombreUsuario = usuarioLogin .NombreUsuario});
 
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", userLoginRespuesta?.UserToken);
+                ((AuthStateProvider)_ProviderStateAuth).NotificarUsuarioLogueado(userLoginRespuesta?.UserToken ?? Token);
+
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", userLoginRespuesta?.UserToken ?? Token);
 
                 return new ResponseGeneric<UsuarioLoginRespuesta>(userLoginRespuesta, HttpStatusCode.OK);
             }
