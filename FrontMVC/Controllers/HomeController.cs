@@ -4,6 +4,7 @@ using Model;
 using Model.Configuration;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.Net.Http.Headers;
 using static System.Net.WebRequestMethods;
 
 namespace FrontMVC.Controllers
@@ -28,7 +29,19 @@ namespace FrontMVC.Controllers
         {
             Model.Configuration.Endpoint endpoint = service?.Endpoints?["Lista"] ?? throw new NullReferenceException("No se encontró el Endpoint");
 
-            var Clientes = JObject.Parse(await _httpClient.GetStringAsync($"{service.BaseUri}{endpoint.Url}")).SelectToken("response")?.ToObject<List<Cliente>>();
+            List<Cliente> Clientes;
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("Token"));
+
+            try
+            {
+                Clientes = JObject.Parse(await _httpClient.GetStringAsync($"{service.BaseUri}{endpoint.Url}")).SelectToken("response")?.ToObject<List<Cliente>>();
+            }
+            catch (Exception)
+            {
+                Clientes = new();
+            }
+            
 
             return View(Clientes);
         }
