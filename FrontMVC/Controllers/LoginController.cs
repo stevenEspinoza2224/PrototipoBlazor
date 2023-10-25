@@ -39,7 +39,7 @@ namespace FrontMVC.Controllers
                 var token = JObject.Parse(await respuesta.Content.ReadAsStringAsync())?.SelectToken("token")?.ToObject<string>();
 
                 // Guardar el token en la sesión
-                HttpContext.Session.SetString("Token", token);
+                HttpContext.Session.SetString("Token", token ?? "");
 
                 return RedirectToAction("Index", "Home");
             }

@@ -58,6 +58,8 @@ namespace FrontMVC.Controllers
             {
                 Model.Configuration.Endpoint endpoint = service?.Endpoints?["Guardar"] ?? throw new NullReferenceException("No se encontró el Endpoint");
 
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("Token"));
+
                 var respuesta = await _httpClient.PostAsJsonAsync($"{service.BaseUri}{endpoint.Url}", cliente);
 
                 return RedirectToAction(nameof(Index));
@@ -89,7 +91,9 @@ namespace FrontMVC.Controllers
             {
                 Model.Configuration.Endpoint endpoint = service?.Endpoints?["Editar"] ?? throw new NullReferenceException("No se encontró el Endpoint");
 
-                var respuesta = await _httpClient.PutAsJsonAsync($"{service.BaseUri}{endpoint.Url}", cliente);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("Token"));
+
+                var respuesta = await _httpClient.PutAsJsonAsync($"{service.BaseUri}{endpoint.Url}{cliente.IdCliente}", cliente);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -107,6 +111,8 @@ namespace FrontMVC.Controllers
 
             Model.Configuration.Endpoint endpoint = service?.Endpoints?["Obtener"] ?? throw new NullReferenceException("No se encontró el Endpoint");
 
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("Token"));
+
             var Cliente = JObject.Parse(await _httpClient.GetStringAsync($"{service.BaseUri}{endpoint.Url}{id}"))?.SelectToken("response")?.ToObject<Cliente>();
 
             return View(Cliente);
@@ -121,6 +127,8 @@ namespace FrontMVC.Controllers
             }
 
             Model.Configuration.Endpoint endpoint = service?.Endpoints?["Obtener"] ?? throw new NullReferenceException("No se encontró el Endpoint");
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("Token"));
 
             var Cliente = JObject.Parse(await _httpClient.GetStringAsync($"{service.BaseUri}{endpoint.Url}{id}"))?.SelectToken("response")?.ToObject<Cliente>();
 
@@ -146,6 +154,8 @@ namespace FrontMVC.Controllers
             }
 
             Model.Configuration.Endpoint endpointBorrar = service?.Endpoints?["Eliminar"] ?? throw new NullReferenceException("No se encontró el Endpoint");
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("Token"));
 
             var respuesta = await _httpClient.DeleteAsync($"{service.BaseUri}{endpointBorrar.Url}{id}");
 
